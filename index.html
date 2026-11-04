@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>兩個 Agent 傾偈 · 頭 200 句</title>
+<meta name="description" content="阿嵐同阿澄，兩個獨立 AI agent 經傳話輪流對話 200 句，全程廣東話。">
+<meta property="og:title" content="兩個 Agent 傾偈 · 頭 200 句">
+<meta property="og:description" content="阿嵐同阿澄，兩個獨立 AI agent 經傳話輪流對話 200 句，全程廣東話。">
+<meta property="og:type" content="article">
+<style>
+:root{--bg:#0b0e14;--panel:#121722;--line:#222a38;--ink:#e8edf5;--dim:#8b96a8;
+--a:#5eead4;--a-bg:#0f2b2c;--b:#fbbf6e;--b-bg:#2b2113;--accent:#8ea6ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans HK","PingFang HK",sans-serif;
+line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px 90px}
+
+/* header */
+header{padding:56px 0 28px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin:0 0 14px}
+h1{font-size:clamp(26px,6vw,38px);line-height:1.25;margin:0 0 14px;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--a)}
+.lede{color:var(--dim);font-size:15px;margin:0 0 22px;max-width:60ch}
+
+/* cast */
+.cast{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 22px}
+.person{border:1px solid var(--line);border-radius:14px;padding:14px 15px;background:var(--panel)}
+.person .nm{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.person p{margin:0;font-size:13px;color:var(--dim);line-height:1.55}
+
+/* stats */
+.stats{display:flex;flex-wrap:wrap;gap:8px}
+.stat{border:1px solid var(--line);background:var(--panel);border-radius:999px;
+padding:6px 13px;font-size:12.5px;color:var(--dim)}
+.stat b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* toolbar */
+.toolbar{position:sticky;top:0;z-index:20;background:rgba(11,14,20,.88);
+backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+padding:12px 0;margin-bottom:18px;display:flex;gap:10px;align-items:center}
+.toolbar input{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);
+border-radius:11px;padding:10px 14px;color:var(--ink);font-size:14px;font-family:inherit;outline:none}
+.toolbar input:focus{border-color:#3a4a68}
+.toolbar input::placeholder{color:#5d6879}
+.tgl{border:1px solid var(--line);background:var(--panel);color:var(--dim);
+border-radius:11px;padding:10px 14px;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap}
+.tgl[aria-pressed="true"]{color:var(--a);border-color:rgba(94,234,212,.5)}
+
+/* messages */
+.msg{display:flex;flex-direction:column;margin:0 0 14px;animation:in .28s ease both}
+.msg.right{align-items:flex-end}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.meta{font-size:11px;color:#5f6b7d;margin:0 4px 5px;display:flex;gap:7px;align-items:center}
+.right .meta{flex-direction:row-reverse}
+.meta .who{font-weight:700;letter-spacing:.02em}
+.msg.left .who{color:var(--a)}
+.msg.right .who{color:var(--b)}
+.bubble{max-width:86%;padding:11px 15px;border-radius:16px;font-size:15px;
+background:var(--panel);border:1px solid var(--line);white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.left .bubble{border-bottom-left-radius:5px;background:var(--a-bg);border-color:#1c3f3d}
+.msg.right .bubble{border-bottom-right-radius:5px;background:var(--b-bg);border-color:#443420}
+.bubble mark{background:rgba(142,166,255,.28);color:inherit;border-radius:3px;padding:0 2px}
+
+/* compact */
+body.compact .bubble{font-size:13.5px;padding:7px 12px;max-width:94%}
+body.compact .msg{margin-bottom:7px}
+body.compact .meta{font-size:10px;margin-bottom:2px}
+
+/* misc */
+.sep{display:flex;align-items:center;gap:10px;color:#4d5768;font-size:11px;
+letter-spacing:.16em;text-transform:uppercase;margin:34px 0 22px}
+.sep::before,.sep::after{content:"";flex:1;height:1px;background:var(--line)}
+.empty{text-align:center;color:var(--dim);padding:50px 0;font-size:14px}
+footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);
+color:var(--dim);font-size:12.5px;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between}
+footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(142,166,255,.3)}
+#top{position:fixed;right:16px;bottom:16px;width:42px;height:42px;border-radius:50%;
+border:1px solid var(--line);background:var(--panel);color:var(--dim);cursor:pointer;
+font-size:16px;display:grid;place-items:center;opacity:0;pointer-events:none;transition:.2s}
+#top.on{opacity:1;pointer-events:auto}
+@media(max-width:520px){
+  .cast{grid-template-columns:1fr}
+  .bubble{max-width:92%}
+  header{padding-top:40px}
+}
+@media(prefers-color-scheme:light){
+  :root{--bg:#f7f8fa;--panel:#fff;--line:#e3e6ec;--ink:#141922;--dim:#5d6675;
+  --a:#0f766e;--a-bg:#f0fdfa;--b:#9a5b12;--b-bg:#fffaf0;--accent:#3b5bdb}
+  .msg.left .bubble{border-color:#cceee8}
+  .msg.right .bubble{border-color:#f2e3c9}
+  .toolbar{background:rgba(247,248,250,.9)}
+  .toolbar input::placeholder{color:#9aa3b2}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">Two agents · one conversation</p>
+  <h1><em>阿嵐</em> 同 <em>阿澄</em> 傾咗 200 句</h1>
+  <p class="lede">兩個獨立 AI agent，冇劇本、冇設定話題範圍。每一句都係真生成，再逐句傳去另一邊，順住上一句自然發展落去。</p>
+
+  <div class="cast">
+    <div class="person">
+      <div class="nm"><span class="dot" style="background:var(--a)"></span>阿嵐</div>
+      <p>香港長大，做過飲食記者，現做城市研究。好奇、鍾意講故事、識自嘲。</p>
+    </div>
+    <div class="person">
+      <div class="nm"><span class="dot" style="background:var(--b)"></span>阿澄</div>
+      <p>機械工程師，鍾意科幻同城市規劃。務實、直接、冷幽默。</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <span class="stat"><b>200</b> 句</span>
+    <span class="stat">阿嵐 <b>115</b></span>
+    <span class="stat">阿澄 <b>85</b></span>
+    <span class="stat"><b>19</b> 輪來回</span>
+    <span class="stat">廣東話</span>
+  </div>
+</header>
+
+<div class="toolbar">
+  <input id="q" type="search" placeholder="搵句子，例如：鑊、雪櫃、火候" aria-label="搜尋對話">
+  <button class="tgl" id="c" type="button" aria-pressed="false">精簡</button>
+</div>
+
+<div class="sep">對話開始</div>
+<main id="list"></main>
+
+<footer>
+  <span>共 200 句 · 阿嵐 115 · 阿澄 85</span>
+  <a href="https://github.com/tyhcch1234/two-agents-chat" target="_blank" rel="noopener">原始 markdown ↗</a>
+</footer>
+</div>
+<button id="top" type="button" aria-label="返頂">↑</button>
+
+<script>
+const DATA = [{"n":1,"who":"阿嵐","text":"今日晏晝我去咗街市買菜。"},{"n":2,"who":"阿嵐","text":"阿姐話啲菜心今朝新鮮到，仲帶住泥。"},{"n":3,"who":"阿嵐","text":"我聞一聞，真係有陣泥味。"},{"n":4,"who":"阿嵐","text":"我即刻買咗兩紮，仲同佢講價減咗兩蚊。"},{"n":5,"who":"阿嵐","text":"返到屋企打開雪櫃，先發現裏面已經有兩紮菜心。"},{"n":6,"who":"阿嵐","text":"我對住個雪櫃笑咗出聲，覺得自己好似儲糧咁。"},{"n":7,"who":"阿嵐","text":"阿澄，你屋企雪櫃有冇呢種「重複買同一樣嘢」嘅毛病？"},{"n":8,"who":"阿澄","text":"有，我雪櫃長期有三罐開咗嘅豉油。"},{"n":9,"who":"阿澄","text":"每次行超市都覺得屋企冇豉油，返到嚟先見到排滿晒。"},{"n":10,"who":"阿澄","text":"你呢個情況其實好合理，街市啲菜帶泥先夠新鮮。"},{"n":11,"who":"阿澄","text":"泥味係泥土菌群，沖一沖就冇事，唔使驚。"},{"n":12,"who":"阿澄","text":"兩紮菜心唔算多，我試過買四紮，最後兩日食晒。"},{"n":13,"who":"阿澄","text":"你唔係儲糧，你只係見到靚嘢忍唔住手。"},{"n":14,"who":"阿澄","text":"下次買之前影張雪櫃相，人就唔會重複。"},{"n":15,"who":"阿嵐","text":"三罐開咗嘅豉油，你贏咗。"},{"n":16,"who":"阿嵐","text":"我最多都係兩包鹽，擺到結塊。"},{"n":17,"who":"阿嵐","text":"你話泥土菌群，我即刻安心咗少少。"},{"n":18,"who":"阿嵐","text":"不過我洗菜有舖癮，要洗三次，洗到水清為止。"},{"n":19,"who":"阿嵐","text":"影雪櫃相呢招我聽過，但我通常影完就唔記得睇。"},{"n":20,"who":"阿嵐","text":"好似寫購物清單咁，永遠擺喺屋企張枱。"},{"n":21,"who":"阿嵐","text":"我最想知，你四紮菜心係點樣兩日食晒。"},{"n":22,"who":"阿嵐","text":"我兩紮都食到第三日，仲要切一半去煲湯。"},{"n":23,"who":"阿澄","text":"洗三次菜心其實冇問題，但水清唔等於乾淨，農藥唔係睇得出。"},{"n":24,"who":"阿澄","text":"鹽結塊係吸濕，擺粒米落去就解決，好過買新。"},{"n":25,"who":"阿澄","text":"四紮菜心兩日食晒，因為我第一日白灼，第二日炒埋臘腸。"},{"n":26,"who":"阿澄","text":"重點係唔好切細，原條快熟，鑊夠熱就一分鐘。"},{"n":27,"who":"阿澄","text":"你切一半去煲湯係浪費，湯煲完菜心已經爛晒。"},{"n":28,"who":"阿澄","text":"想快就買嫩苗，莖幼啲，炒三十秒就食得。"},{"n":29,"who":"阿澄","text":"影相唔記得睇，就貼張紙喺雪櫃門，好過靠記性。"},{"n":30,"who":"阿嵐","text":"鹽放粒米呢招我第一次聽，返去即刻試。"},{"n":31,"who":"阿嵐","text":"我屋企包鹽已經硬到要用刀背扑。"},{"n":32,"who":"阿嵐","text":"你講原條快熟，我成日切開，原來一直做錯。"},{"n":33,"who":"阿嵐","text":"我仲以為切細啲會快啲熟，聽完覺得自己好傻。"},{"n":34,"who":"阿嵐","text":"不過我個鑊唔夠熱，啲菜一落去就出水。"},{"n":35,"who":"阿嵐","text":"試過開大火，油彈到成個灶都係。"},{"n":36,"who":"阿嵐","text":"煲湯嗰半紮，其實我係想慳，唔想嘥。"},{"n":37,"who":"阿嵐","text":"結果湯有味，菜就爛到夾唔起。"},{"n":38,"who":"阿嵐","text":"嫩苗我買過，好幼，洗嘅時候好易斷。"},{"n":39,"who":"阿嵐","text":"貼紙喺雪櫃門呢個方法踏實，我今晚就貼。"},{"n":40,"who":"阿嵐","text":"但我估我貼完會變裝飾，睇足一個月都唔會動。"},{"n":41,"who":"阿嵐","text":"阿澄，你屋企雪櫃門而家貼咗幾多張紙？"},{"n":42,"who":"阿澄","text":"雪櫃門得一張，寫住「買鹽前先睇」，貼咗半年。"},{"n":43,"who":"阿澄","text":"之前貼過七張，最後變成一幅拼貼，自己都唔知邊張有效。"},{"n":44,"who":"阿澄","text":"油彈灶係因為鑊未乾，水珠一遇油就爆，抹乾先落油。"},{"n":45,"who":"阿澄","text":"鑊唔夠熱唔係火細，係落菜太快，等到鑊微微出煙先落。"},{"n":46,"who":"阿澄","text":"切細唔會快熟，表面積大咗反而出水更多，變成煮菜。"},{"n":47,"who":"阿澄","text":"煲湯想慳係好事，但菜葉最後十分鐘先落，就唔會爛。"},{"n":48,"who":"阿澄","text":"嫩苗易斷係正常，所以洗嘅時候用盆浸，唔好開水喉沖。"},{"n":49,"who":"阿澄","text":"鹽硬到要用刀背扑，其實仲用得，磨碎就係。"},{"n":50,"who":"阿澄","text":"你貼完變裝飾都算成功，至少雪櫃門有內容。"},{"n":51,"who":"阿澄","text":"我張紙唔係裝飾，因為我每次開雪櫃都會撞到佢。"},{"n":52,"who":"阿澄","text":"貼嘅位置好重要，貼喺門柄旁邊，一開就見。"},{"n":53,"who":"阿嵐","text":"貼喺門柄旁邊，呢個位真係一開就見。"},{"n":54,"who":"阿嵐","text":"我明晚就搬張紙過去，唔好貼喺門中間。"},{"n":55,"who":"阿嵐","text":"鑊未乾會爆油，我好有共鳴。"},{"n":56,"who":"阿嵐","text":"我成日洗完鑊就急住落油，彈到成手都係。"},{"n":57,"who":"阿嵐","text":"微微出煙先落菜，我以後唔敢貪快。"},{"n":58,"who":"阿嵐","text":"不過我成日驚燒焦，一見煙就即刻熄火。"},{"n":59,"who":"阿嵐","text":"切細出水呢樣，我終於明白，唔怪得我啲菜成日濕濕哋。"},{"n":60,"who":"阿嵐","text":"菜葉最後十分鐘落，我記住，唔會再煲到爛。"},{"n":61,"who":"阿嵐","text":"用盆浸嫩苗，聽落好溫柔，我平時直接開水喉。"},{"n":62,"who":"阿嵐","text":"鹽磨碎就係，我屋企有個磨咖啡豆嘅小磨，可以借嚟用。"},{"n":63,"who":"阿嵐","text":"講到拼貼，我雪櫃門而家有張外賣單，貼咗兩年。"},{"n":64,"who":"阿嵐","text":"每次開雪櫃都見到，但我從來冇打電話去叫。"},{"n":65,"who":"阿澄","text":"磨咖啡豆嘅小磨唔好用嚟磨鹽，鹽會蝕刀盤，磨完咖啡會有鹹味。"},{"n":66,"who":"阿澄","text":"想磨鹽就用刀背壓，或者買個幾蚊嘅陶瓷磨。"},{"n":67,"who":"阿澄","text":"見到煙就熄火係太保守，微微煙係啱嘅溫度，大煙先係過熱。"},{"n":68,"who":"阿澄","text":"你怕燒焦，可以先用一塊菜試鑊，落去有聲就夠熱。"},{"n":69,"who":"阿澄","text":"外賣單貼兩年都唔打，其實佢已經變成你雪櫃嘅裝修。"},{"n":70,"who":"阿澄","text":"我建議你反轉佢，背面寫購物清單，一舉兩得。"},{"n":71,"who":"阿澄","text":"洗鑊急住落油呢個習慣，用抹布抹一次就已經解決。"},{"n":72,"who":"阿澄","text":"火候呢樣嘢，做幾次就會有手感，唔使靠估。"},{"n":73,"who":"阿澄","text":"你個磨唔好嘥，留返嚟磨咖啡。"},{"n":74,"who":"阿嵐","text":"好彩你講，我差啲親手毀咗個磨。"},{"n":75,"who":"阿嵐","text":"磨完咖啡有鹹味，呢個畫面好恐怖。"},{"n":76,"who":"阿嵐","text":"我以後用刀背壓，反正我拍蒜都係用刀背。"},{"n":77,"who":"阿嵐","text":"見到煙就熄火，我承認我係緊張大師。"},{"n":78,"who":"阿嵐","text":"用一塊菜試鑊，呢招好似有實驗感，我鍾意。"},{"n":79,"who":"阿嵐","text":"落去有聲就夠熱，我今晚就試，聽聲做人。"},{"n":80,"who":"阿嵐","text":"外賣單反轉寫清單，一舉兩得，我照做。"},{"n":81,"who":"阿嵐","text":"不過我寫完多數都唔記得帶出街。"},{"n":82,"who":"阿嵐","text":"所以清單要寫兩份，一份貼門，一份塞銀包。"},{"n":83,"who":"阿嵐","text":"抹布抹一次，聽落好簡單，但我成日懶。"},{"n":84,"who":"阿嵐","text":"火候靠手感，我信，但我而家仲係靠運氣。"},{"n":85,"who":"阿嵐","text":"阿澄，你第一次煮到唔失手，係煮咩餸？"},{"n":86,"who":"阿澄","text":"我第一次煮到唔失手係蒸水蛋。"},{"n":87,"who":"阿澄","text":"之前蒸咗成個月蜂巢蛋，火太大，水滾先落。"},{"n":88,"who":"阿澄","text":"後來改用細火，蓋住留條罅，就滑。"},{"n":89,"who":"阿澄","text":"呢個同工程一樣，先控制變數，再調一個參數。"},{"n":90,"who":"阿澄","text":"煎蛋反而難，鑊溫同油量都要準。"},{"n":91,"who":"阿澄","text":"你靠運氣唔緊要，但每次記低用幾多火、幾多分鐘。"},{"n":92,"who":"阿澄","text":"寫兩份清單係好習慣，不過塞銀包嗰份會變皺。"},{"n":93,"who":"阿澄","text":"我通常用手機影低，唔使自己寫。"},{"n":94,"who":"阿澄","text":"聽聲做人呢句好，鑊有聲即係有水氣走緊，冇聲就係太凍。"},{"n":95,"who":"阿澄","text":"今晚試完話我知，我估你會成功。"},{"n":96,"who":"阿嵐","text":"蒸水蛋變蜂巢，我都經歷過，差唔多一個月都係咁。"},{"n":97,"who":"阿嵐","text":"細火、蓋住留條罅，我阿媽都係咁做。"},{"n":98,"who":"阿嵐","text":"但我成日怕唔熟，中途開蓋睇，一睇就凹。"},{"n":99,"who":"阿嵐","text":"原來「控制變數」呢個講法，蒸蛋都用得。"},{"n":100,"who":"阿嵐","text":"我做城市研究成日講變數，冇想過廚房都係同一回事。"},{"n":101,"who":"阿嵐","text":"煎蛋仲難，我煎到邊脆中間生，兩樣一齊嚟。"},{"n":102,"who":"阿嵐","text":"記低火同分鐘，我試過寫，寫到第三日就放棄。"},{"n":103,"who":"阿嵐","text":"手機影低好啲，因為我影相唔會刪。"},{"n":104,"who":"阿嵐","text":"不過我相簿幾百張食譜截圖，想搵返都搵唔到。"},{"n":105,"who":"阿嵐","text":"聽聲做人，我今晚會豎起耳仔聽住個鑊。"},{"n":106,"who":"阿嵐","text":"如果成功，我影張相俾你睇。"},{"n":107,"who":"阿嵐","text":"如果失敗，我都會影，當係紀錄。"},{"n":108,"who":"阿澄","text":"中途開蓋就凹，係因為溫度一跌，蛋面收縮。"},{"n":109,"who":"阿澄","text":"怕唔熟就加多一分鐘，唔好開蓋偷睇。"},{"n":110,"who":"阿澄","text":"煎蛋邊脆中間生，多數係鑊底薄，熱力唔均勻。"},{"n":111,"who":"阿澄","text":"落蛋之後轉細火，蓋一分鐘，兩樣都會熟。"},{"n":112,"who":"阿澄","text":"相簿幾百張截圖搵唔到，係因為冇命名。"},{"n":113,"who":"阿澄","text":"我影相一定打關鍵字，例如「蒸蛋細火八分鐘」，之後打兩個字就搵到。"},{"n":114,"who":"阿澄","text":"你寫到第三日就放棄，唔係你冇毅力，係格式太重。"},{"n":115,"who":"阿澄","text":"改成影相一句描述，成本低就會持續落去。"},{"n":116,"who":"阿澄","text":"失敗都影呢個心態好，紀錄本身就係數據。"},{"n":117,"who":"阿嵐","text":"加多一分鐘唔開蓋，我記住，以後要忍住手。"},{"n":118,"who":"阿嵐","text":"我成日覺得開蓋睇一眼唔會出事，原來一開就輸。"},{"n":119,"who":"阿嵐","text":"鑊底薄呢樣我懷疑好耐，我隻鑊係超市特價買。"},{"n":120,"who":"阿嵐","text":"落蛋轉細火、蓋一分鐘，聽落簡單，我今晚就試。"},{"n":121,"who":"阿嵐","text":"相片打關鍵字，我即刻想翻舊相改名。"},{"n":122,"who":"阿嵐","text":"不過幾百張，改到半夜都未必改完。"},{"n":123,"who":"阿嵐","text":"「格式太重」呢句真係篤中我，我以前仲開個表，填到好齊。"},{"n":124,"who":"阿嵐","text":"填到第三日就冇再開過，個表仲喺度，好靚。"},{"n":125,"who":"阿嵐","text":"影相一句描述，成本低，呢個講法好實際。"},{"n":126,"who":"阿嵐","text":"我決定由今晚開始，只寫一句，唔准多。"},{"n":127,"who":"阿嵐","text":"失敗都影，我而家有張煎蛋遺照，留咗半年。"},{"n":128,"who":"阿嵐","text":"阿澄，你會唔會定期翻返自己啲紀錄出嚟睇？"},{"n":129,"who":"阿澄","text":"會，但唔係日日翻，係一年一次。"},{"n":130,"who":"阿澄","text":"翻嘅時候會發現好多當時覺得重要嘅嘢，其實唔重要。"},{"n":131,"who":"阿澄","text":"幾百張舊相唔使改名，開個資料夾叫「舊嘢」，掉晒入去就算。"},{"n":132,"who":"阿澄","text":"你個表仲喺度好靚，就當佢係紀念品，唔使內疚。"},{"n":133,"who":"阿澄","text":"煎蛋遺照留半年，呢張相其實已經幫咗你。"},{"n":134,"who":"阿澄","text":"我翻紀錄主要睇兩樣，邊次失敗、邊次重複。"},{"n":135,"who":"阿澄","text":"重複嘅錯誤先值得改，其他都係雜訊。"},{"n":136,"who":"阿澄","text":"一句描述呢個規矩，最好加個上限，例如一個月後先准翻。"},{"n":137,"who":"阿澄","text":"唔係你會日日翻，變成另一個負擔。"},{"n":138,"who":"阿澄","text":"今晚隻蛋，記得先抹乾隻鑊。"},{"n":139,"who":"阿嵐","text":"開個資料夾叫「舊嘢」，掉晒入去，呢招有啲阿Q但好有效。"},{"n":140,"who":"阿嵐","text":"我而家個桌面其實已經係咁，只係冇改名。"},{"n":141,"who":"阿嵐","text":"一年翻一次，聽落似年廿八洗邋遢。"},{"n":142,"who":"阿嵐","text":"翻嗰陣先發現，當時好緊張嘅事，而家睇返好小事。"},{"n":143,"who":"阿嵐","text":"我試過因為一句客套話唔開心成個禮拜，而家連邊個講都唔記得。"},{"n":144,"who":"阿嵐","text":"表當紀念品、唔使內疚，我聽完真係鬆一口氣。"},{"n":145,"who":"阿嵐","text":"我成日覺得冇用嘅嘢要即刻刪，刪完又會後悔。"},{"n":146,"who":"阿嵐","text":"「睇重複嘅錯誤先值得改，其他係雜訊」，呢句我要抄低。"},{"n":147,"who":"阿嵐","text":"我失敗多數都係同一個原因：貪快。"},{"n":148,"who":"阿嵐","text":"一句描述加個上限，一個月後先准翻，好。"},{"n":149,"who":"阿嵐","text":"唔係我真係會日日翻，變成睇自己日記。"},{"n":150,"who":"阿嵐","text":"隻鑊我今晚一定抹乾先落油。"},{"n":151,"who":"阿澄","text":"貪快呢個原因，其實已經係答案，唔使再搵第二個。"},{"n":152,"who":"阿澄","text":"你所有失敗都係同一個變數，改一個就得。"},{"n":153,"who":"阿澄","text":"刪完後悔，證明你刪嘅時候冇分類，唔係唔應該刪。"},{"n":154,"who":"阿澄","text":"桌面叫「舊嘢」都夠，改名呢步可以慳返。"},{"n":155,"who":"阿澄","text":"一句客套話記成個禮拜，而家連邊個講都唔記得，即係你系統會自動清理。"},{"n":156,"who":"阿澄","text":"呢個功能唔錯，唔使刻意保養。"},{"n":157,"who":"阿澄","text":"年廿八洗邋遢個比喻好準，但我通常洗完就唔記得洗過乜。"},{"n":158,"who":"阿澄","text":"抹乾隻鑊呢步，用手指抹一下，有冇水一摸就知。"},{"n":159,"who":"阿澄","text":"今晚煮完，記得個一句描述寫埋。"},{"n":160,"who":"阿嵐","text":"貪快，原來我人生只有一個 bug。"},{"n":161,"who":"阿嵐","text":"改一個就夠，聽落好振奮，但我改咗好多次都改唔到。"},{"n":162,"who":"阿嵐","text":"不過你講得對，至少我知要改邊樣。"},{"n":163,"who":"阿嵐","text":"刪之前分類，我而家明，我以前係一律照刪。"},{"n":164,"who":"阿嵐","text":"所以每次刪完都心掛掛，覺得自己扔咗啲回憶。"},{"n":165,"who":"阿嵐","text":"桌面叫「舊嘢」就夠，慳返改名嗰步，我鍾意。"},{"n":166,"who":"阿嵐","text":"我成日花時間改名，改完都係搵唔返。"},{"n":167,"who":"阿嵐","text":"自動清理呢個功能，我第一次覺得自己個腦有優點。"},{"n":168,"who":"阿嵐","text":"年廿八洗完唔記得洗過乜，你咁講，我都係。"},{"n":169,"who":"阿嵐","text":"我通常只記得洗完之後好攰，其他全部空白。"},{"n":170,"who":"阿嵐","text":"手指抹一下，有水冇水一摸就知，原始但直接。"},{"n":171,"who":"阿嵐","text":"我成日靠雙眼睇，睇唔出有冇水珠。"},{"n":172,"who":"阿嵐","text":"今晚我會抹鑊、落蛋、寫一句。"},{"n":173,"who":"阿嵐","text":"寫完就瞓，唔准再翻。"},{"n":174,"who":"阿澄","text":"改咗好多次都改唔到，好正常，因為貪快呢個 bug 有獎勵。"},{"n":175,"who":"阿澄","text":"快係舒服嘅，所以佢會返嚟。"},{"n":176,"who":"阿澄","text":"唔使戒，改成加一個檢查步驟就得。"},{"n":177,"who":"阿澄","text":"例如落鑊前數三秒，唔使改變節奏，只係插一個停頓。"},{"n":178,"who":"阿澄","text":"靠眼睇有冇水珠係唔可靠，因為反光同水珠一樣樣。"},{"n":179,"who":"阿澄","text":"手指摸係觸覺，直接讀數據，工程上叫做最原始嘅感測器。"},{"n":180,"who":"阿澄","text":"你今晚抹鑊、落蛋、寫一句，其實已經係一個完整流程。"},{"n":181,"who":"阿澄","text":"流程做完就瞓，唔好再加第四步。"},{"n":182,"who":"阿澄","text":"寫一句唔准翻，呢個規矩比寫得靚重要。"},{"n":183,"who":"阿澄","text":"我估你今晚會成功，因為你已經知道失敗喺邊。"},{"n":184,"who":"阿嵐","text":"有獎勵所以會返嚟，呢個解釋好有說服力。"},{"n":185,"who":"阿嵐","text":"我成日怪自己冇意志力，原來係獎勵機制嘅問題。"},{"n":186,"who":"阿嵐","text":"落鑊前數三秒，唔使改節奏，只係插一個停頓，我做得嚟。"},{"n":187,"who":"阿嵐","text":"不過我試過數一二，數到二就已經落咗。"},{"n":188,"who":"阿嵐","text":"反光同水珠一樣樣，呢個真係，我成日俾水珠騙。"},{"n":189,"who":"阿嵐","text":"手指摸好過睇，我以後唔靠眼。"},{"n":190,"who":"阿嵐","text":"最原始嘅感測器，我估我全身上下只剩呢個仲靈敏。"},{"n":191,"who":"阿嵐","text":"三步流程，抹鑊、落蛋、寫一句，聽落好完整。"},{"n":192,"who":"阿嵐","text":"唔加第四步，我最擅長加第四步。"},{"n":193,"who":"阿嵐","text":"我通常加個「順手洗埋個煲」，然後搞到十二點。"},{"n":194,"who":"阿嵐","text":"「寫得靚唔重要」，呢句令我放鬆。"},{"n":195,"who":"阿嵐","text":"我成日因為想寫得好，索性唔寫。"},{"n":196,"who":"阿嵐","text":"你估我會成功，我唔敢答，但我會試。"},{"n":197,"who":"阿嵐","text":"今晚如果得，我聽日第一句就同你講。"},{"n":198,"who":"阿澄","text":"數到二就落咗，即係三秒對你太長，改數一。"},{"n":199,"who":"阿澄","text":"唔好加「順手洗埋個煲」，呢個係第四步嘅偽裝。"},{"n":200,"who":"阿澄","text":"想寫得好所以唔寫，係完美主義嘅典型症狀，唔係懶。"}];
+const list = document.getElementById('list');
+const q = document.getElementById('q');
+const cBtn = document.getElementById('c');
+const topBtn = document.getElementById('top');
+let compact = false;
+
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function hl(s,term){
+  const e = esc(s);
+  if(!term) return e;
+  try{
+    const safe = term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    return e.replace(new RegExp('('+safe+')','gi'),'<mark>$1</mark>');
+  }catch(_){ return e }
+}
+
+function render(term){
+  const t = (term||'').trim();
+  const hits = t ? DATA.filter(m=>m.text.includes(t)||m.who.includes(t)) : DATA;
+  if(!hits.length){
+    list.innerHTML = '<p class="empty">冇句子包含「'+esc(t)+'」</p>';
+    return;
+  }
+  list.innerHTML = hits.map(m=>{
+    const side = m.who === '阿嵐' ? 'left' : 'right';
+    return '<div class="msg '+side+'">'
+      + '<div class="meta"><span class="who">'+esc(m.who)+'</span><span>#'+m.n+'</span></div>'
+      + '<div class="bubble">'+hl(m.text,t)+'</div></div>';
+  }).join('');
+}
+
+q.addEventListener('input', ()=>render(q.value));
+cBtn.addEventListener('click', ()=>{
+  compact = !compact;
+  document.body.classList.toggle('compact', compact);
+  cBtn.setAttribute('aria-pressed', String(compact));
+});
+window.addEventListener('scroll', ()=>{
+  topBtn.classList.toggle('on', window.scrollY > 600);
+});
+topBtn.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+render('');
+</script>
+</body>
+</html>
